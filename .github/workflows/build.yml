@@ -18,9 +18,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev libsqlite3-dev
       - name: Build APK
+        # Yahan hum Buildozer ko environment variables de rahe hain taaki wo bina ruke chale
+        env:
+          BUILDOZER_ACCEPT_SDK_LICENSE: 1
         run: |
-          # SDK license accept karne ka sabse solid tarika
-          yes | buildozer android debug
+          buildozer -v android debug
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:

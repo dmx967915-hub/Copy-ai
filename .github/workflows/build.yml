@@ -1,31 +1,27 @@
 name: Build APK
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        pip install --upgrade pip
-        pip install buildozer kivy
-        sudo apt-get update
-        sudo apt-get install -y libsqlite3-dev bzip2 libbz2-dev libssl-dev libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev tar zip unzip
-    - name: Build with Buildozer
-      run: |
-        yes | buildozer android debug
-    - name: Upload APK Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Copy-AI-APK
-        path: bin/*.apk
-        
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install buildozer
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+      - name: Build with Buildozer
+        run: |
+          buildozer android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-app-apk
+          path: bin/*.apk
+          

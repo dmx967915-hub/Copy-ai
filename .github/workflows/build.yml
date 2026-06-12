@@ -1,32 +1,8 @@
-name: Build APK
-
-on: [push, workflow_dispatch]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade buildozer
-          # 2026 updated dependencies
-          sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo-dev cmake libffi-dev libssl-dev libsqlite3-dev
-      - name: Build APK
-        env:
-          # License acceptance variable
-          BUILDOZER_ACCEPT_SDK_LICENSE: 1
-        run: |
-          buildozer android debug
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-app-apk
-          path: bin/*.apk
-          
+- name: Build APK
+  env:
+    BUILDOZER_ACCEPT_SDK_LICENSE: "1"
+  run: |
+    # SDK components ko pehle hi force install karna
+    yes | sdkmanager --sdk_root=/usr/lib/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+    buildozer -v android debug
+    
